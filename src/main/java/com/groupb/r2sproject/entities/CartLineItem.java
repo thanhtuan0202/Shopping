@@ -28,7 +28,7 @@ public class CartLineItem {
     @Column(nullable = false)
     private boolean is_delete;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "cart_id", referencedColumnName="id")
     private Cart cart;
 
