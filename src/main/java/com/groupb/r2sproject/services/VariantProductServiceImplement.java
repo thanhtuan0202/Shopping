@@ -26,16 +26,15 @@ public class VariantProductServiceImplement implements VariantProductService {
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
             VariantProductRespone variantProductRespone = new VariantProductRespone();
-            variantProductRespone.setId_product(product.getId()); // Giả sử Product có getAccountId()
+            variantProductRespone.setId_product(product.getId());
             variantProductRespone.setName(product.getName());
 
             List<VariantProductDTO> variantProductDTOS = product.getVariantProducts().stream().map(variantProduct -> {
                 VariantProductDTO dto = new VariantProductDTO();
                 dto.setId(variantProduct.getId());
-                dto.setColor(variantProduct.getColor()); // Giả sử VariantProduct có getColor()
+                dto.setColor(variantProduct.getColor());
                 dto.setSize(variantProduct.getSize());
-                dto.setPrice(Double.valueOf(variantProduct.getPrice())); // Giả sử giá trị price đã là Double
-                // Thêm các thuộc tính khác của VariantProductDTO nếu cần
+                dto.setPrice(Double.valueOf(variantProduct.getPrice()));
                 return dto;
             }).collect(Collectors.toList());
             variantProductRespone.setVariantProducts(variantProductDTOS);

@@ -31,9 +31,9 @@ public class VariantProductController {
     public ResponseEntity<VariantProductRespone> getProductVariants(@PathVariable Long product_id){
         Optional<Product> product = productRepository.findById(product_id);
         if (product.isPresent()) {
-            Optional<VariantProductRespone> variantProductRespone = variantProductService.getVariantProducts(product_id);
-            if (variantProductRespone.isPresent()) {
-                return ResponseEntity.ok(variantProductRespone.get());
+            Optional<VariantProductRespone> respone = variantProductService.getVariantProducts(product_id);
+            if (respone.isPresent()) {
+                return ResponseEntity.ok(respone.get());
             }
             return ResponseEntity.notFound().build();
         }

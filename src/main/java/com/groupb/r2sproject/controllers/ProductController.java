@@ -34,7 +34,7 @@ public class ProductController {
         if (productDetailDTO != null) {
             return ResponseEntity.ok(productDetailDTO);
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping
