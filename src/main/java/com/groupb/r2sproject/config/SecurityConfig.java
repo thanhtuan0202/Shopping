@@ -49,7 +49,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN")                                .requestMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE,"/accounts/**").hasRole("ADMIN")
                                 .requestMatchers("/categorys/**").hasRole("ADMIN")
-                                .anyRequest().authenticated()
+                                .requestMatchers("/products/**").permitAll().
+                                requestMatchers("/variant-products/**").permitAll()
                 ).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

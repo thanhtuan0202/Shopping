@@ -22,7 +22,7 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<VariantProduct> variantProducts;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 }
