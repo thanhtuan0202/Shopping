@@ -46,8 +46,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorization -> authorization
                                 .requestMatchers("/auth/**").permitAll()
+
+                                .requestMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN")                                
+                                .requestMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE,"/accounts/**").hasRole("ADMIN")
+                                .requestMatchers("/categorys/**").hasRole("ADMIN")
+                                .requestMatchers("/products/**").permitAll().
+                                requestMatchers("/variant-products/**").permitAll()
                                 .requestMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN")
                                 .requestMatchers("/categories/**").hasRole("ADMIN")
+
                                 .anyRequest().authenticated()
                 ).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

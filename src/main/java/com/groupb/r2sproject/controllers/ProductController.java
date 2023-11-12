@@ -1,5 +1,7 @@
 package com.groupb.r2sproject.controllers;
 
+import com.groupb.r2sproject.dtos.ProductDTO.ProductDetailDTO;
+import com.groupb.r2sproject.entities.Product;
 import com.groupb.r2sproject.services.interfaces.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +29,12 @@ public class ProductController {
     }
     
     @GetMapping("/{product_id}")
-    public ResponseEntity<?> getProductById(@PathVariable("product_id") Long product_id){
-        return null;
+    public ResponseEntity<ProductDetailDTO> getProductById(@PathVariable("product_id") Long product_id){
+        ProductDetailDTO productDetailDTO = productService.getProductDetailById(product_id);
+        if (productDetailDTO != null) {
+            return ResponseEntity.ok(productDetailDTO);
+        }
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping
