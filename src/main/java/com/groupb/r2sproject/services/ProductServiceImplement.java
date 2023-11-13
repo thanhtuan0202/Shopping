@@ -53,7 +53,18 @@ public class ProductServiceImplement implements ProductService {
 
 	@Override
 	public ProductDetailDTO updateProduct(Long id, ProductDetailDTO productDetailDTO) {
-		// TODO Auto-generated method stub
+		Optional<Product> productOp = productRepository.findById(id);
+		if (productOp.isPresent()) {
+			productOp.get().setName(productDetailDTO.getName());
+			Optional<Category> category = categoryRepository.findByName(productDetailDTO.getCategoryName());
+			if (category.isPresent()) {
+				productOp.get().setCategory(category.get());
+				Product updateProduct = productRepository.save(productOp.get());
+				return new ProductDetailDTO(updateProduct.getId() ,updateProduct.getName(), updateProduct.getCategory().getName());
+			} else {
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+			}
+		}	
 		return null;
 	}
 
