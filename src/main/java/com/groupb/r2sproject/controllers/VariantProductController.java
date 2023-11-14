@@ -48,7 +48,7 @@ public class VariantProductController {
         if (res != null) {
             return new ResponseEntity<VariantProductRespone>(res, HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<VariantProductRespone>((VariantProductRespone) null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<VariantProductRespone>((VariantProductRespone) null, HttpStatus.NO_CONTENT);
         }
     }
 
@@ -58,7 +58,7 @@ public class VariantProductController {
         if (res != null) {
             return new ResponseEntity<VariantProductRespone>(res, HttpStatus.OK);
         } else {
-            return new ResponseEntity<VariantProductRespone>((VariantProductRespone) null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<VariantProductRespone>((VariantProductRespone) null, HttpStatus.NO_CONTENT);
         } 
     }
 }

@@ -46,7 +46,7 @@ public class ProductController {
             if (res != null) {
                 return new ResponseEntity<ProductDetailDTO>(res, HttpStatus.CREATED);
             } else {
-                return new ResponseEntity<ProductDetailDTO>((ProductDetailDTO) null, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<ProductDetailDTO>((ProductDetailDTO) null, HttpStatus.NO_CONTENT);
             }
     }
 
@@ -56,7 +56,7 @@ public class ProductController {
         if (res != null) {
             return new ResponseEntity<ProductDetailDTO>(res, HttpStatus.OK);
         } else {
-            return new ResponseEntity<ProductDetailDTO>((ProductDetailDTO) null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ProductDetailDTO>((ProductDetailDTO) null, HttpStatus.NO_CONTENT);
         }
     }
     
