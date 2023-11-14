@@ -67,16 +67,4 @@ public class ProductServiceImplement implements ProductService {
 		}	
 		return null;
 	}
-
-	@Override
-	public VariantProductRespone createVariantProduct(VariantProductDTO variantProductDTO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public VariantProductRespone updateVariantProduct(Long id, VariantProductDTO variantProductDTO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
