@@ -37,9 +37,9 @@ public class VariantProductController {
             if (respone.isPresent()) {
                 return ResponseEntity.ok(respone.get());
             }
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/product/{product_id}")

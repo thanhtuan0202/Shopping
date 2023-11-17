@@ -5,8 +5,6 @@ import lombok.*;
 @Data
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProductDetailDTO {
     private Long id;
     private String name;

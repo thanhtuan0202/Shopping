@@ -29,14 +29,22 @@ public class CartLineItem {
     private boolean is_delete;
 
     @ManyToOne()
-    @JoinColumn(name = "cart_id", referencedColumnName="id")
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private Cart cart;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName="id")
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
 
     @ManyToOne
-    @JoinColumn(name = "variant_product_id", referencedColumnName="id")
+    @JoinColumn(name = "variant_product_id", referencedColumnName = "id")
     private VariantProduct variant_product;
+
+    public boolean getIs_Delete() {
+        return this.is_delete;
+    }
+
+    public void setIs_Delete(boolean is_delete) {
+        this.is_delete = is_delete;
+    }
 }
