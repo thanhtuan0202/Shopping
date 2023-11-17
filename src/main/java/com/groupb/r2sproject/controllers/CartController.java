@@ -1,10 +1,14 @@
 package com.groupb.r2sproject.controllers;
 
 import com.groupb.r2sproject.dtos.CartDTO.AddNewProduct;
+import com.groupb.r2sproject.dtos.VariantProductDTO.VariantProductRespone;
+import com.groupb.r2sproject.exceptions.NotFoundException;
 import com.groupb.r2sproject.services.interfaces.CartLineItemService;
 import com.groupb.r2sproject.services.interfaces.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,11 +36,20 @@ public class CartController {
     }
 
     @PostMapping("/{cart_id}/{variantP_id}")
-    public ResponseEntity<?> addNewProductToCart(@PathVariable("cart_id") Long cart_id,@PathVariable("variantP_id") Long variantP_id,@RequestBody() AddNewProduct newProduct){
-        //direct to cart-line item service
-
-        //get response
-        
-        return null;
+    public ResponseEntity<?> addNewProductToCart(@PathVariable("cart_id") Long cart_id,@PathVariable("variantP_id") Long variantP_id,@RequestBody() AddNewProduct addNewProduct){
+    	Float res;
+		try {
+			if (addNewProduct.getQuantity() == null || addNewProduct.getQuantity() <= 0) {
+	            throw new NotFoundException("Quantity must be a positive integer");
+	        }
+			res = cartLineItemService.addProductToCart(cart_id, variantP_id, addNewProduct);
+			return new ResponseEntity<Float>(res, HttpStatus.OK);
+		} catch (NotFoundException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}  catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
     }
+    
+ 
 }
