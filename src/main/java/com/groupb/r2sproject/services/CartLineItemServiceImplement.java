@@ -35,7 +35,7 @@ public class CartLineItemServiceImplement implements CartLineItemService {
 
 		CartLineItem cartLineItem = new CartLineItem();
 		cartLineItem.setCreate_at(ZonedDateTime.now());
-		cartLineItem.set_delete(false);
+		cartLineItem.setIs_Delete(false);
 
 		cartLineItem.setQuantity(addNewProduct.getQuantity());
 		Float totalPrice = vp.getPrice() * addNewProduct.getQuantity();

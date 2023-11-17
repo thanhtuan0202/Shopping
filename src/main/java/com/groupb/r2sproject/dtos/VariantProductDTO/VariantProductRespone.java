@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-
+@AllArgsConstructor
+@NoArgsConstructor
 public class VariantProductRespone {
     private Long id_product;
     private String name;	
