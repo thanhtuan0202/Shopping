@@ -43,7 +43,7 @@ public class CartController {
 	            throw new NotFoundException("Quantity must be a positive integer");
 	        }
 			res = cartLineItemService.addProductToCart(cart_id, variantP_id, addNewProduct);
-			return new ResponseEntity<Float>(res, HttpStatus.OK);
+			return new ResponseEntity<String>("Total price: " + res, HttpStatus.OK);
 		} catch (NotFoundException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}  catch (Exception e) {
