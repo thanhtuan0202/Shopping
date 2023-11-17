@@ -2,6 +2,7 @@ package com.groupb.r2sproject.controllers;
 
 import com.groupb.r2sproject.dtos.ProductDTO.ProductDetailDTO;
 import com.groupb.r2sproject.entities.Product;
+import com.groupb.r2sproject.exceptions.NotFoundException;
 import com.groupb.r2sproject.services.interfaces.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,23 +42,29 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDetailDTO> createNewProduct(@RequestBody ProductDetailDTO productDetailDTO){
-    	ProductDetailDTO res = productService.createProduct(productDetailDTO);
-            if (res != null) {
-                return new ResponseEntity<ProductDetailDTO>(res, HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<ProductDetailDTO>((ProductDetailDTO) null, HttpStatus.NO_CONTENT);
-            }
+    public ResponseEntity<?> createNewProduct(@RequestBody ProductDetailDTO productDetailDTO){
+    	ProductDetailDTO res;
+		try {
+			res = productService.createProduct(productDetailDTO);
+			return new ResponseEntity<ProductDetailDTO>(res, HttpStatus.CREATED);
+		} catch (NotFoundException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
     }
 
     @PutMapping("/{product_id}")
-    public ResponseEntity<ProductDetailDTO> updateProduct(@RequestBody ProductDetailDTO productDetailDTO, @PathVariable("product_id" )Long product_id){
-    	ProductDetailDTO res = productService.updateProduct(product_id, productDetailDTO);
-        if (res != null) {
-            return new ResponseEntity<ProductDetailDTO>(res, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<ProductDetailDTO>((ProductDetailDTO) null, HttpStatus.NO_CONTENT);
-        }
+    public ResponseEntity<?> updateProduct(@RequestBody ProductDetailDTO productDetailDTO, @PathVariable("product_id" )Long product_id){
+    	ProductDetailDTO res;
+		try {
+			res = productService.updateProduct(product_id, productDetailDTO);
+			return new ResponseEntity<ProductDetailDTO>(res, HttpStatus.OK);
+		} catch (NotFoundException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
     }
     
 }
