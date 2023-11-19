@@ -1,13 +1,14 @@
 package com.groupb.r2sproject.dtos.AdressDTO;
 
 import com.groupb.r2sproject.entities.Address;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class GetAdress {
-
-    private Set<Address> addresses;
-
+    private Set<String> addresses;
 }

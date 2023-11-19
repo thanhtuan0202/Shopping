@@ -35,10 +35,7 @@ public class VariantProductController {
         Optional<Product> product = productRepository.findById(product_id);
         if (product.isPresent()) {
             Optional<VariantProductRespone> respone = variantProductService.getVariantProducts(product_id);
-            if (respone.isPresent()) {
-                return ResponseEntity.ok(respone.get());
-            }
-            return ResponseEntity.noContent().build();
+            return respone.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
         }
         return ResponseEntity.noContent().build();
     }

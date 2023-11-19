@@ -11,5 +11,5 @@ public interface AddressService {
 
     Boolean UpdateUserAddresses(Long user_id, UpdateAddress updateAdress);
 
-    Boolean DeleteAddresses(Long user_id, UpdateAddress updateAdress);
+    Boolean DeleteAddresses(Long user_id, Long address_id);
 }

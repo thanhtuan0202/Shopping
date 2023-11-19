@@ -4,6 +4,7 @@ import com.groupb.r2sproject.dtos.CustomUserDetail;
 import com.groupb.r2sproject.dtos.OrderDTO.CreateNewOrder;
 import com.groupb.r2sproject.dtos.OrderDTO.CreateOrderResponse;
 import com.groupb.r2sproject.entities.Order;
+import com.groupb.r2sproject.services.CustomUserDetailServiceImplement;
 import com.groupb.r2sproject.services.interfaces.OrderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,39 +19,41 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
     @Autowired
     private OrderService orderService;
-    
+    private final CustomUserDetailServiceImplement userDetailsService;
+
+    public OrderController(CustomUserDetailServiceImplement userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
     @GetMapping()
     public ResponseEntity<?> getAllOrder(){
-        return null;
+        Long user_id = this.userDetailsService.getCurrentUserDetails().getUserId();
+        Set<CreateOrderResponse> res = this.orderService.getAllOrder(user_id);
+        return new ResponseEntity<Set<CreateOrderResponse>>(res, HttpStatus.OK);
     }
 
-    @GetMapping("/{user_id}/{order_id}")
-    public ResponseEntity<?> getOrderById(@PathVariable("user_id") Long user_id,@PathVariable("order_id") Long order_id,@RequestAttribute("current_user") CustomUserDetail user){
-        if(!Objects.equals(user.getUserId(), user_id)){
-            return new ResponseEntity<String>("Forbiden",null, 403);
-        }
-        CreateOrderResponse order = orderService.getOrder(order_id);
+    @GetMapping("/{order_id}")
+    public ResponseEntity<?> getOrderById(@PathVariable("order_id") Long order_id){
+        Long user_id = this.userDetailsService.getCurrentUserDetails().getUserId();
+        CreateOrderResponse order = orderService.getOrder(order_id, user_id);
         if(order == null){
             return ResponseEntity.noContent().build();
         }
         return new ResponseEntity<CreateOrderResponse>(order, HttpStatus.OK);
     }
 
-    @PostMapping("/{user_id}/{cart_id}")
+    @PostMapping()
     public ResponseEntity<?> createNewOrder(
-        @PathVariable("user_id") Long user_id,@PathVariable("cart_id") Long cart_id, @RequestBody CreateNewOrder order_info,
-        @RequestAttribute("current_user") CustomUserDetail user
+        @RequestBody CreateNewOrder order_info
     ){
-        if(!Objects.equals(user.getUserId(), user_id)){
-            return new ResponseEntity<String>("Forbiden",null, 403);
-        }
-        CreateOrderResponse order = this.orderService.createOrder(cart_id, order_info);
+        Long user_id = this.userDetailsService.getCurrentUserDetails().getUserId();
+        CreateOrderResponse order = this.orderService.createOrder(user_id, order_info);
         if (order == null){
             return ResponseEntity.noContent().build();
         }

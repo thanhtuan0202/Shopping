@@ -9,5 +9,4 @@ import java.util.Set;
 public class UpdateProfile {
     private String email;
     private String full_name;
-    private Set<Address> addresses;
 }

@@ -45,17 +45,19 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorization -> authorization
                                 .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/users/**").permitAll()
                                 .requestMatchers("/orders/**").hasRole("USER")
-                                .requestMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN")                                
-                                .requestMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE,"/accounts/**").hasRole("ADMIN")
-                                .requestMatchers("/categorys/**").hasRole("ADMIN")
-                                .requestMatchers("/products/**").permitAll().
-                                requestMatchers("/variant-products/**").permitAll()
+                                .requestMatchers("/cart-lines/**").hasRole("USER")
+                                .requestMatchers("/addresses/**").hasRole("USER")
+//                                .requestMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST,"/products/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT,"/products/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST,"/variant-products/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT,"/variant-products/**").hasRole("ADMIN")
+                                .requestMatchers("/products/**").permitAll()
+                                .requestMatchers("/variant-products/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/carts/**").permitAll()
-                                .requestMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN")
                                 .requestMatchers("/categories/**").hasRole("ADMIN")
-
                                 .anyRequest().authenticated()
                 ).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

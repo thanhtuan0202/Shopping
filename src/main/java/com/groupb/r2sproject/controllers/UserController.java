@@ -2,8 +2,10 @@ package com.groupb.r2sproject.controllers;
 
 import com.groupb.r2sproject.dtos.CustomUserDetail;
 import com.groupb.r2sproject.dtos.OrderDTO.CreateOrderResponse;
+import com.groupb.r2sproject.dtos.UserDTO.ChangePasswordDTO;
 import com.groupb.r2sproject.dtos.UserDTO.GetProfile;
 import com.groupb.r2sproject.dtos.UserDTO.UpdateProfile;
+import com.groupb.r2sproject.services.CustomUserDetailServiceImplement;
 import com.groupb.r2sproject.services.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,25 +20,46 @@ import java.util.Objects;
 public class UserController {
     @Autowired
     private UserService userService;
+    private final CustomUserDetailServiceImplement userDetailsService;
 
-    @GetMapping("/{user_id}")
-    public ResponseEntity<?> getUserInfo(@PathVariable("user_id") Long user_id, @RequestAttribute("current_user") CustomUserDetail user) throws Exception {
-        if(!Objects.equals(user.getUserId(), user_id)){
-            return new ResponseEntity<String>("Forbiden",null, 403);
+    public UserController(CustomUserDetailServiceImplement userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+    @GetMapping()
+    public ResponseEntity<?> getUserInfo() throws Exception {
+        try{
+            Long user_id = this.userDetailsService.getCurrentUserDetails().getUserId();
+            GetProfile profile = userService.getUserByUserId(user_id);
+            return new ResponseEntity<>(profile, HttpStatus.OK);
         }
-        GetProfile profile = userService.getUserByUserId(user_id);
-        return new ResponseEntity<GetProfile>(profile, HttpStatus.OK);
+        catch (Exception ex){
+            return new ResponseEntity<String>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/{user_id}")
-    public ResponseEntity<?> updateUserInfo(@PathVariable("user_id") Long user_id, @RequestAttribute("current_user") CustomUserDetail user, @RequestBody UpdateProfile profile) throws Exception {
-        if(!Objects.equals(user.getUserId(), user_id)){
-            return new ResponseEntity<String>("Forbiden",null, 403);
-        }
-        Boolean result = userService.updateProfile(user_id, profile);
-        if (result == false){
+    public ResponseEntity<?> updateUserInfo(@PathVariable("user_id") Long user_id, @RequestBody UpdateProfile profile) throws Exception {
+//        if(!Objects.equals(user_id, this.userDetailsService.getCurrentUserDetails().getUserId())){
+//            return new ResponseEntity<String>("Forbiden",HttpStatus.FORBIDDEN);
+//        }
+        Long user_id_1 = this.userDetailsService.getCurrentUserDetails().getUserId();
+        GetProfile result = userService.updateProfile(user_id, profile);
+        if (result == null){
             return new ResponseEntity<String>("Cập nhật user thất bại", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<String>("Cập nhật user thành công", HttpStatus.OK);
+        return new ResponseEntity<GetProfile>(result, HttpStatus.OK);
+    }
+
+    @PatchMapping()
+    public ResponseEntity<?> ChangePassword( @RequestBody ChangePasswordDTO dto) throws Exception {
+        try{
+            Long user_id = this.userDetailsService.getCurrentUserDetails().getUserId();
+            System.out.println(user_id);
+            Boolean res = this.userService.changePassword(user_id, dto.getOld_password(), dto.getNew_password(), dto.getConfirm_password());
+            return new ResponseEntity<>("Cập nhật mật khẩu thành công", HttpStatus.OK);
+        }
+        catch (Exception ex){
+            return new ResponseEntity<String>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

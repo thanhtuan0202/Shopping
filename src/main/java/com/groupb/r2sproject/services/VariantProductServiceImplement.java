@@ -106,7 +106,6 @@ public class VariantProductServiceImplement implements VariantProductService {
 		VariantProduct updateVarProduct = varianProductRepository.save(varProductOp);
 
 		VariantProductDTO variantProductDTO = new VariantProductDTO();
-		variantProductDTO.setId(id);
 		variantProductDTO.setColor(variantProductUpdateDTO.getColor());
 		variantProductDTO.setSize(variantProductUpdateDTO.getSize());
 		variantProductDTO.setModel(variantProductUpdateDTO.getModel());

@@ -3,6 +3,8 @@ package com.groupb.r2sproject.services;
 import com.groupb.r2sproject.dtos.CustomUserDetail;
 import com.groupb.r2sproject.entities.User;
 import com.groupb.r2sproject.repositories.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +20,15 @@ public class CustomUserDetailServiceImplement implements UserDetailsService {
     public CustomUserDetailServiceImplement(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+    public CustomUserDetail getCurrentUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetail) {
+            return (CustomUserDetail) authentication.getPrincipal();
+        } else {
+            return null;
+        }
+    }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);

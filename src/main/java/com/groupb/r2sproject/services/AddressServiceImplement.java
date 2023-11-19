@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import com.groupb.r2sproject.repositories.AddressRepository;
 import com.groupb.r2sproject.services.interfaces.AddressService;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class AddressServiceImplement implements AddressService {
@@ -20,15 +22,17 @@ public class AddressServiceImplement implements AddressService {
     private AddressRepository addressRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Override
     public GetAdress getUserAddresses(Long user_id) {
         Optional<User> user = userRepository.findById(user_id);
         if (user.isPresent()) {
-            GetAdress getAdress = new GetAdress();
-            getAdress.setAddresses(user.get().getAddresses());
-            return getAdress;
+            Set<String> res = new HashSet<>();
+            for (Address address : user.get().getAddresses()){
+                res.add(address.getAddress());
+            }
+            return new GetAdress(res);
         } else throw new RuntimeException("User not found");
     }
 
@@ -62,10 +66,10 @@ public class AddressServiceImplement implements AddressService {
     }
 
     @Override
-    public Boolean DeleteAddresses(Long user_id, UpdateAddress updateAdress) {
+    public Boolean DeleteAddresses(Long user_id, Long address_id) {
         Optional<User> user = userRepository.findById(user_id);
         if (user.isPresent()) {
-            Optional<Address> address = addressRepository.findById(updateAdress.getId());
+            Optional<Address> address = addressRepository.findById(address_id);
             if (address.isPresent()) {
                 Address curr_address = address.get();
                 addressRepository.delete(curr_address);

@@ -12,10 +12,8 @@ import com.groupb.r2sproject.repositories.ProductRepository;
 import com.groupb.r2sproject.services.interfaces.CartService;
 import com.groupb.r2sproject.services.interfaces.OrderService;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,26 +53,48 @@ public class OrderServiceImplement implements OrderService {
             item.setIs_Delete(true);
             this.cartLineItemRepository.save(item);
         }
-        return this.getOrder(order.getId());
+        return this.getOrder(order.getId(),cart_id);
     }
 
     @Override
-    public void getAllOrder() {
+    public Set<CreateOrderResponse> getAllOrder(Long user_id) {
         List<Order> orders = this.orderRepository.findAll();
+        Set<CreateOrderResponse> res = new HashSet<>();
+        for(Order od : orders) {
+            Set<CustomProductInfo> cus = new HashSet<CustomProductInfo>();
+            Long cart_id = Long.parseLong("0");
+            for (CartLineItem item : od.getCartLineItems()){
+                cart_id = item.getCart().getId();
+                cus.add(new CustomProductInfo(
+                        item.getVariant_product().getId(), item.getVariant_product().getProduct().getName(),
+                        item.getVariant_product().getColor(),item.getVariant_product().getSize(),item.getVariant_product().getModel(),
+                        item.getVariant_product().getPrice(),item.getQuantity(), item.getTotal_price()
+                ));
+            }
+            if(Objects.equals(cart_id, user_id)) {
+                res.add(new CreateOrderResponse(od.getId(), od.getAddress(), od.getDelivery_time(), od.getTotal_price(), cus));
+            }
+        }
+        return res;
     }
 
     @Override
-    public CreateOrderResponse getOrder(Long order_id) {
+    public CreateOrderResponse getOrder(Long order_id, Long user_id) {
         Optional<Order> order = this.orderRepository.findById(order_id);
         if (order.isPresent()) {
             Order od =  order.get();
             Set<CustomProductInfo> cus = new HashSet<CustomProductInfo>();
+            Long cart_id = Long.parseLong("0");
             for (CartLineItem item : od.getCartLineItems()){
+                cart_id = item.getCart().getId();
                 cus.add(new CustomProductInfo(
                         item.getVariant_product().getId(), item.getVariant_product().getProduct().getName(),
                         item.getVariant_product().getColor(),item.getVariant_product().getSize(),item.getVariant_product().getModel(),
                         item.getVariant_product().getPrice(),item.getQuantity(), item.getTotal_price()
                         ));
+            }
+            if(!Objects.equals(cart_id, user_id)){
+                return null;
             }
             return new CreateOrderResponse(od.getId(),od.getAddress(),od.getDelivery_time(),od.getTotal_price(),cus);
         }

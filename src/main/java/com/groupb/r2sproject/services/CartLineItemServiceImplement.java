@@ -1,6 +1,7 @@
 package com.groupb.r2sproject.services;
 
 import com.groupb.r2sproject.dtos.CartDTO.AddNewProduct;
+import com.groupb.r2sproject.dtos.CartDTO.CartItemResponse;
 import com.groupb.r2sproject.entities.Cart;
 import com.groupb.r2sproject.entities.CartLineItem;
 import com.groupb.r2sproject.entities.VariantProduct;
@@ -12,6 +13,10 @@ import com.groupb.r2sproject.services.interfaces.CartLineItemService;
 
 import java.text.DecimalFormat;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +30,34 @@ public class CartLineItemServiceImplement implements CartLineItemService {
 
 	@Autowired
 	private VarianProductRepository varianProductRepository;
+
+	@Override
+	public Set<CartItemResponse> getItemByUserId(Long userId) {
+		Optional<Cart> op_cart = this.cartRepository.findById(userId);
+		if(op_cart.isPresent()) {
+			Cart cart = op_cart.get();
+			Set<CartItemResponse> cartResponse = new HashSet<>();
+			for(CartLineItem item : cart.getCartLineItems()){
+				if(!item.getIs_Delete()){
+					CartItemResponse res = new CartItemResponse(
+							item.getVariant_product().getProduct().getName(),
+							item.getVariant_product().getSize(),
+							item.getVariant_product().getColor(),
+							item.getVariant_product().getModel(),
+							item.getVariant_product().getPrice(),
+							item.getCreate_at().toLocalDate(),
+							item.getQuantity(),
+							item.getTotal_price()
+					);
+					cartResponse.add(res);
+				}
+			}
+			return cartResponse;
+		}
+		else{
+			return null;
+		}
+	}
 
 	@Override
 	public Float addProductToCart(Long cart_id, Long variantP_id, AddNewProduct addNewProduct) throws NotFoundException {

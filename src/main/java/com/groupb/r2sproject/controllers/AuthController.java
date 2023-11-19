@@ -2,6 +2,7 @@ package com.groupb.r2sproject.controllers;
 
 import com.groupb.r2sproject.dtos.AuthDTO.LoginDTO;
 import com.groupb.r2sproject.dtos.AuthDTO.RegisterDTO;
+import com.groupb.r2sproject.dtos.UserDTO.GetProfile;
 import com.groupb.r2sproject.services.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,15 +21,15 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterDTO registrationDTO) {
         try{
-            RegisterDTO result = userService.register(registrationDTO);
+            GetProfile result = userService.register(registrationDTO);
             if (result != null) {
-                return new ResponseEntity<RegisterDTO>(result, HttpStatus.CREATED);
+                return new ResponseEntity<GetProfile>(result, HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<RegisterDTO>((RegisterDTO) null, HttpStatus.BAD_REQUEST);
             }
         }
         catch (Exception ex){
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

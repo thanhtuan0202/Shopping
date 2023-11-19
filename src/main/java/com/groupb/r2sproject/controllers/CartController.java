@@ -1,6 +1,7 @@
 package com.groupb.r2sproject.controllers;
 
 import com.groupb.r2sproject.dtos.CartDTO.AddNewProduct;
+import com.groupb.r2sproject.dtos.CustomUserDetail;
 import com.groupb.r2sproject.dtos.VariantProductDTO.VariantProductRespone;
 import com.groupb.r2sproject.exceptions.NotFoundException;
 import com.groupb.r2sproject.services.interfaces.CartLineItemService;
@@ -9,12 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/carts")
@@ -36,8 +34,14 @@ public class CartController {
     }
 
     @PostMapping("/{cart_id}/{variantP_id}")
-    public ResponseEntity<?> addNewProductToCart(@PathVariable("cart_id") Long cart_id,@PathVariable("variantP_id") Long variantP_id,@RequestBody() AddNewProduct addNewProduct){
-    	Float res;
+    public ResponseEntity<?> addNewProductToCart(@PathVariable("cart_id") Long cart_id,
+                                                 @PathVariable("variantP_id") Long variantP_id,
+                                                 @RequestBody() AddNewProduct addNewProduct,@RequestAttribute("current_user") CustomUserDetail user
+    ){
+        if(!Objects.equals(user.getUserId(), cart_id)){
+            return new ResponseEntity<String>("Forbiden",null, 403);
+        }
+        Float res;
 		try {
 			if (addNewProduct.getQuantity() == null || addNewProduct.getQuantity() <= 0) {
 	            throw new NotFoundException("Quantity must be a positive integer");

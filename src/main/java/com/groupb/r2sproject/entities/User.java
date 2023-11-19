@@ -2,6 +2,7 @@ package com.groupb.r2sproject.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
@@ -10,6 +11,7 @@ import java.util.Set;
 @Table(name = "user")
 @Getter
 @Setter
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +41,11 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
+    public User(String username, String password, String email, String full_name, Cart cart) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.full_name = full_name;
+        this.cart = cart;
+    }
 }
