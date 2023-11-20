@@ -1,21 +1,16 @@
 package com.groupb.r2sproject.controllers;
 
+import com.groupb.r2sproject.dtos.ProductDTO.ProductByCategory;
 import com.groupb.r2sproject.dtos.ProductDTO.ProductDetailDTO;
-import com.groupb.r2sproject.entities.Product;
 import com.groupb.r2sproject.exceptions.NotFoundException;
 import com.groupb.r2sproject.services.interfaces.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
@@ -28,8 +23,18 @@ public class ProductController {
     }
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<?> getProductByCategory(@PathVariable("category") Long category_id){
-        return null;
+    public ResponseEntity<?> getProductByCategory(@PathVariable("category") Long category_id,
+                                                  @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                  @RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+                                                  @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+                                                  @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir){
+        ProductByCategory res = this.productService.getProductByCategory(category_id, pageSize, pageNo, sortBy,sortDir);
+        if(res == null){
+            return ResponseEntity.noContent().build();
+        }
+        else{
+            return ResponseEntity.ok(res);
+        }
     }
     
     @GetMapping("/{product_id}")

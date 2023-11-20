@@ -45,7 +45,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorization -> authorization
                                 .requestMatchers("/auth/**").permitAll()
-                                .requestMatchers("/users/**").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/users/**").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/products/**").permitAll()
+                                .requestMatchers("/variant-products/**").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/categories/**").permitAll()
                                 .requestMatchers("/orders/**").hasRole("USER")
                                 .requestMatchers("/cart-lines/**").hasRole("USER")
                                 .requestMatchers("/addresses/**").hasRole("USER")
@@ -54,10 +57,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT,"/products/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST,"/variant-products/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT,"/variant-products/**").hasRole("ADMIN")
-                                .requestMatchers("/products/**").permitAll()
-                                .requestMatchers("/variant-products/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/carts/**").permitAll()
-                                .requestMatchers("/categories/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST,"/categories/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 ).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

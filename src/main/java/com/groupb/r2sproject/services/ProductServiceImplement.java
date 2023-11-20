@@ -1,6 +1,8 @@
 package com.groupb.r2sproject.services;
 
+import com.groupb.r2sproject.dtos.ProductDTO.ProductByCategory;
 import com.groupb.r2sproject.dtos.ProductDTO.ProductDetailDTO;
+import com.groupb.r2sproject.dtos.ProductDTO.ProductResponse;
 import com.groupb.r2sproject.dtos.VariantProductDTO.VariantProductDTO;
 import com.groupb.r2sproject.dtos.VariantProductDTO.VariantProductRespone;
 import com.groupb.r2sproject.entities.Product;
@@ -11,11 +13,17 @@ import com.groupb.r2sproject.repositories.ProductRepository;
 import com.groupb.r2sproject.services.interfaces.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ProductServiceImplement implements ProductService {
@@ -44,7 +52,7 @@ public class ProductServiceImplement implements ProductService {
 		newProduct.setName(productDetailDTO.getName());
 //		Check if categoryName exists
 		Category category = categoryRepository.findByName(productDetailDTO.getCategoryName())
-				.orElseThrow(() -> new NotFoundException("Category not found"));
+			.orElseThrow(() -> new NotFoundException("Category not found"));
 		
 		newProduct.setCategory(category);
 		Product product = productRepository.save(newProduct);
@@ -66,4 +74,26 @@ public class ProductServiceImplement implements ProductService {
 				updateProduct.getCategory().getName());
 
 	}
+
+	@Override
+	public ProductByCategory getProductByCategory(Long category_id, Integer pageSize, Integer pageNo, String sortBy, String sortDir) {
+		Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+		List<Product> products = productRepository.findByCategory_Id(category_id, pageable);
+		if(products.isEmpty()){
+			return null;
+		}
+		else{
+			ProductByCategory res = new ProductByCategory();
+			res.setCategory_id(category_id);
+			Set<ProductResponse> product_lst = new HashSet<>();
+			for(Product item : products){
+				res.setCategory_name(item.getCategory().getName());
+				product_lst.add(new ProductResponse(item.getId(), item.getName()));
+			}
+			res.setProducts(product_lst);
+			return res;
+		}
+
+	}
+
 }

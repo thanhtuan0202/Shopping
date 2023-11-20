@@ -1,4 +1,5 @@
 package com.groupb.r2sproject.services;
+import com.groupb.r2sproject.dtos.CategoryDTO.CategoryResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import com.groupb.r2sproject.repositories.CategoryRepository;
@@ -11,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CategoryServiceImplement implements CategoryService {
@@ -23,8 +26,13 @@ public class CategoryServiceImplement implements CategoryService {
     private ProductRepository productRepository;
 
     @Override
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public Set<CategoryResponse> getAllCategories() {
+        List<Category> cate_lst = categoryRepository.findAll();
+        Set<CategoryResponse> res = new HashSet<>();
+        for(Category item: cate_lst) {
+            res.add(new CategoryResponse(item.getId(), item.getName(), item.getDescription()));
+        }
+        return res;
     }
 
     @Override

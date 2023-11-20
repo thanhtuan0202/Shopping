@@ -1,7 +1,9 @@
 package com.groupb.r2sproject.controllers;
 
 import java.util.List;
+import java.util.Set;
 
+import com.groupb.r2sproject.dtos.CategoryDTO.CategoryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +26,12 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> categories = categoryService.getAllCategories();
+    public ResponseEntity<?> getAllCategories() {
+        Set<CategoryResponse> categories = categoryService.getAllCategories();
         if (categories.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>(categories, HttpStatus.OK);
+            return new ResponseEntity<Set<CategoryResponse>>(categories, HttpStatus.OK);
         }
     }
 

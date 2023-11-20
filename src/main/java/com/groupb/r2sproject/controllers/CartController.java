@@ -23,16 +23,6 @@ public class CartController {
     @Autowired
     private CartLineItemService cartLineItemService;
 
-    @GetMapping("/{cart_id}")
-    public ResponseEntity<?> getCartById(@PathVariable("cart_id") Long cart_id){
-        return null;
-    }
-    
-    @GetMapping("/{user_id}")
-    public ResponseEntity<?> getCartByUserId(@PathVariable("user_id") Long user_id){
-        return null;
-    }
-
     @PostMapping("/{cart_id}/{variantP_id}")
     public ResponseEntity<?> addNewProductToCart(@PathVariable("cart_id") Long cart_id,
                                                  @PathVariable("variantP_id") Long variantP_id,
