@@ -37,13 +37,10 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{user_id}")
-    public ResponseEntity<?> updateUserInfo(@PathVariable("user_id") Long user_id, @RequestBody UpdateProfile profile) throws Exception {
-//        if(!Objects.equals(user_id, this.userDetailsService.getCurrentUserDetails().getUserId())){
-//            return new ResponseEntity<String>("Forbiden",HttpStatus.FORBIDDEN);
-//        }
+    @PutMapping()
+    public ResponseEntity<?> updateUserInfo(@RequestBody UpdateProfile profile) throws Exception {
         Long user_id_1 = this.userDetailsService.getCurrentUserDetails().getUserId();
-        GetProfile result = userService.updateProfile(user_id, profile);
+        GetProfile result = userService.updateProfile(user_id_1, profile);
         if (result == null){
             return new ResponseEntity<String>("Cập nhật user thất bại", HttpStatus.BAD_REQUEST);
         }
