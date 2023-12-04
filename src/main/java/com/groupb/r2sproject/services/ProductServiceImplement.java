@@ -1,5 +1,6 @@
 package com.groupb.r2sproject.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.groupb.r2sproject.dtos.ProductDTO.ProductByCategory;
 import com.groupb.r2sproject.dtos.ProductDTO.ProductDetailDTO;
 import com.groupb.r2sproject.dtos.ProductDTO.ProductResponse;
@@ -33,6 +34,7 @@ public class ProductServiceImplement implements ProductService {
 	@Autowired
 	private CategoryRepository categoryRepository;
 
+	ObjectMapper mapper = new ObjectMapper();
 	@Override
 	public ProductDetailDTO getProductDetailById(Long id) {
 		Optional<Product> product = productRepository.findById(id);

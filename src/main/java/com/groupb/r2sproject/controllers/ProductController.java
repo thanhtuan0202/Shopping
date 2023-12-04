@@ -1,5 +1,7 @@
 package com.groupb.r2sproject.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.groupb.r2sproject.dtos.ApiResponse;
 import com.groupb.r2sproject.dtos.ProductDTO.ProductByCategory;
 import com.groupb.r2sproject.dtos.ProductDTO.ProductDetailDTO;
 import com.groupb.r2sproject.exceptions.NotFoundException;
@@ -27,13 +29,14 @@ public class ProductController {
                                                   @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                   @RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                   @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
-                                                  @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir){
+                                                  @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) throws JsonProcessingException{
         ProductByCategory res = this.productService.getProductByCategory(category_id, pageSize, pageNo, sortBy,sortDir);
         if(res == null){
             return ResponseEntity.noContent().build();
         }
         else{
-            return ResponseEntity.ok(res);
+            ApiResponse<ProductByCategory> response = new ApiResponse<>(res);
+            return ResponseEntity.ok(response);
         }
     }
     
