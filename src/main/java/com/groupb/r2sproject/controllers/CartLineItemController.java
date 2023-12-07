@@ -25,13 +25,9 @@ public class CartLineItemController {
     public CartLineItemController(CustomUserDetailServiceImplement userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
-    @GetMapping("/{user_id}")
-    public ResponseEntity<?> getItemByUserId(
-            @PathVariable("user_id") Long user_id
-    ){
-        if(!Objects.equals(user_id, this.userDetailsService.getCurrentUserDetails().getUserId())){
-            return new ResponseEntity<String>("Forbiden",HttpStatus.FORBIDDEN);
-        }
+    @GetMapping()
+    public ResponseEntity<?> getItemByUserId(){
+        Long user_id = this.userDetailsService.getCurrentUserDetails().getUserId();
         Set<CartItemResponse> res = this.cartLineItemService.getItemByUserId(user_id);
         try{
             if(res == null){

@@ -6,14 +6,17 @@ import com.groupb.r2sproject.dtos.OrderDTO.CustomProductInfo;
 import com.groupb.r2sproject.entities.Cart;
 import com.groupb.r2sproject.entities.CartLineItem;
 import com.groupb.r2sproject.entities.Order;
+import com.groupb.r2sproject.entities.User;
 import com.groupb.r2sproject.repositories.CartLineItemRepository;
 import com.groupb.r2sproject.repositories.OrderRepository;
 import com.groupb.r2sproject.repositories.ProductRepository;
+import com.groupb.r2sproject.repositories.UserRepository;
 import com.groupb.r2sproject.services.interfaces.CartService;
 import com.groupb.r2sproject.services.interfaces.OrderService;
 
 import java.util.*;
 
+import com.groupb.r2sproject.shared.enums.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +34,9 @@ public class OrderServiceImplement implements OrderService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public CreateOrderResponse createOrder(Long cart_id, CreateNewOrder order_info) {
         Cart cart = this.cartService.findById(cart_id);
@@ -46,8 +52,15 @@ public class OrderServiceImplement implements OrderService {
         if(order_item.isEmpty()){
             return null;
         }
-        Order order = new Order(order_info.getAddress(), order_info.getDelivery_time(), total_price, order_item);
+        Order order = new Order();
+        order.setAddress(order_info.getAddress());
+        order.setFullName(order_info.getFull_name());
+        order.setPhone(order_info.getPhone());
+        order.setTotal_price(total_price);
+        order.setStatus(OrderStatus.waiting);
+        order.setCartLineItems(order_item);
         Order newOrder = this.orderRepository.save(order);
+
         for (CartLineItem item : order_item) {
             item.setOrder(newOrder);
             item.setIs_Delete(true);
@@ -58,6 +71,11 @@ public class OrderServiceImplement implements OrderService {
 
     @Override
     public Set<CreateOrderResponse> getAllOrder(Long user_id) {
+//        Optional<User> optionalUser = this.userRepository.findById(user_id);
+//        if(optionalUser.isPresent()){
+//            User user = optionalUser.get();
+//
+//        }
         List<Order> orders = this.orderRepository.findAll();
         Set<CreateOrderResponse> res = new HashSet<>();
         for(Order od : orders) {

@@ -1,6 +1,8 @@
 package com.groupb.r2sproject.entities;
 
+import com.groupb.r2sproject.shared.enums.OrderStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Order{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +26,19 @@ public class Order{
     private String address;
 
     @Column(nullable = false)
+    private String phone;
+
+    @Column(nullable = false, name = "full_name")
+    private String fullName;
+
+    @Column()
     private LocalDate delivery_time;
 
     @Column(nullable = false)
     private Float total_price;
+
+    @Column(nullable = false)
+    private OrderStatus status = OrderStatus.waiting;
 
     @OneToMany(mappedBy = "order")
     private Set<CartLineItem> cartLineItems;

@@ -10,13 +10,7 @@ import com.groupb.r2sproject.services.interfaces.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 import java.util.Set;
@@ -59,5 +53,10 @@ public class OrderController {
         }
         //find cart -> take list of products in cart -> create order -> update each product with isDeleted = true and add order id to this product
         return new ResponseEntity<CreateOrderResponse>(order, HttpStatus.OK);
+    }
+
+    @PutMapping("/{orderId}")
+    public ResponseEntity<?> changeOrderDetails(@RequestBody CreateNewOrder order_info, @PathVariable("orderId") Long order_id){
+        return null;
     }
 }
